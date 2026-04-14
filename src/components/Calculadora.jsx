@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import Pantalla from './Pantalla';
+import Teclado from './Teclado';
+
 
 const Calculadora = () => {
   //Estados
@@ -17,7 +20,6 @@ const Calculadora = () => {
     localStorage.setItem('ultimoValorPantalla', valorPantalla);
   }, [valorPantalla]);
 
-  //Estilos
  
   //Logica
   const presionarTecla = (tecla) => {
@@ -61,22 +63,10 @@ const Calculadora = () => {
 
   return (
     <>
-      {/* Pantalla */}
-      <div style={pantallaStyle}>{valorPantalla}</div>
-
-      {/* Teclado */}
-      <div style={tecladoStyle}>
-        {teclas.map((tecla) => (
-          <button
-            key={tecla}
-            style={buttonStyle}
-            onClick={() => presionarTecla(tecla)}
-          >
-            {tecla}
-          </button>
-        ))}
-      </div>
+      <Pantalla valorPantalla={valorPantalla} />
+      <Teclado presionarTecla={presionarTecla} />
     </>
+
   );
 };
 
