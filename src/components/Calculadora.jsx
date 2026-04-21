@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Pantalla from './Pantalla';
 import Teclado from './Teclado';
+import calculadoraContext from '../src/CalculadoraContext';
+
 
 
 const Calculadora = () => {
@@ -62,12 +64,23 @@ const Calculadora = () => {
 
 
   return (
-    <>
-      <Pantalla valorPantalla={valorPantalla} />
-      <Teclado presionarTecla={presionarTecla} />
-    </>
+    <calculadoraContext.Provider value = {{presionarTecla, valorPantalla}}>
+    <div style={styles.calculadora}>
+      <Pantalla/>
+      <Teclado/>
+    </div>
+    </calculadoraContext.Provider>
 
   );
 };
+
+const styles = {
+  calculadora: {
+    margin: '50px',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+  }
+}
 
 export default Calculadora;
