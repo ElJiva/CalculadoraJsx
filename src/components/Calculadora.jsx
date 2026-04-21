@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Pantalla from './Pantalla';
 import Teclado from './Teclado';
-import calculadoraContext from '../src/CalculadoraContext';
+import calculadoraContext from '../CalculadoraContext';
 
 
 
@@ -10,9 +10,13 @@ const Calculadora = () => {
   const [valorPantalla, setValorPantalla] = useState(
     localStorage.getItem('ultimoValorPantalla') || '0'
   );
-  const [valorPrevio, setValorPrevio] = useState(0);
-  const [operador, setOperador] = useState(null);
-  const [esperandoOperando, setEsperandoOperando] = useState(false);
+  //const [valorPrevio, setValorPrevio] = useState(0);
+  const valorPrevio = useRef(0);
+  //const [operador, setOperador] = useState(null);
+  const operador = useRef(null);
+  //const [esperandoOperando, setEsperandoOperando] = useState(false);
+  const esperandoOperando = useRef(false);
+
 
   //Efectos
   useEffect(() => {
@@ -26,9 +30,9 @@ const Calculadora = () => {
   //Logica
   const presionarTecla = (tecla) => {
     if (/[0-9.]/.test(tecla)) {
-      if (esperandoOperando) {
+      if (esperandoOperando.current) {
         setValorPantalla(tecla);
-        setEsperandoOperando(false);
+        esperandoOperando.current = false;
       } else {
         setValorPantalla(valorPantalla === '0' ? tecla : valorPantalla + tecla);
       }
@@ -37,28 +41,28 @@ const Calculadora = () => {
 
     // Operadores
     if (['+', '-', '*', '/'].includes(tecla)) {
-      setValorPrevio(parseFloat(valorPantalla));
-      setOperador(tecla);
-      setEsperandoOperando(true);
+      valorPrevio.current = valorPantalla;
+      operador.current = tecla;
+      esperandoOperando.current = true;
       return;
     }
 
     // Resultado
     if (tecla === '=') {
       if (operador) {
-        const resultado = eval(`${valorPrevio} ${operador} ${valorPantalla}`);
+        const resultado = eval(`${valorPrevio.current} ${operador.current} ${valorPantalla}`);
         setValorPantalla(String(parseInt(resultado)));
-        setOperador(null);
-        setEsperandoOperando(false);
+        operador.current = null;
+        esperandoOperando.current = true;
       }
       return;
     }
     //Borrar
     if (tecla === 'C') {
       setValorPantalla('0');
-      setValorPrevio(0);
-      setOperador(null);
-      setEsperandoOperando(false);
+      operador.current = null;
+      esperandoOperando.current = false;
+      return;
     }
   };
 
@@ -76,11 +80,14 @@ const Calculadora = () => {
 
 const styles = {
   calculadora: {
-    margin: '50px',
+    background: '#000',
+    borderRadius: '44px',
+    padding: '28px 20px 20px',
+    width: '320px',
+    margin: '50px auto',
     display: 'flex',
     flexDirection: 'column',
-    flex: 1,
-  }
-}
+  },
+};
 
 export default Calculadora;

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import calculadoraContext from "../src/CalculadoraContext";
+import calculadoraContext from "../CalculadoraContext";
 
 
 function Teclado (){
@@ -35,19 +35,21 @@ function Teclado (){
 }
 
 const styles = {
-    boton:{
-        padding: '15px',
-        fontSize: '1.5rem',
-        cursor: 'pointer',
-
-    },
-    teclado:{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '10px',
-    },
-
-
-}
-
+  teclado: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '10px',
+    marginTop: '8px',
+  },
+  boton: {
+    width: '64px',
+    height: '64px',
+    fontSize: '22px',
+    cursor: 'pointer',
+    border: 'none',
+    borderRadius: '50%',
+    background: '#333',
+    color: '#fff',
+  },
+};
 export default Teclado;

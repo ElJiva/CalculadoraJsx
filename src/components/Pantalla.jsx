@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import calculadoraContext from "../src/CalculadoraContext";
+import calculadoraContext from "../CalculadoraContext";
 
 
 function Pantalla(){
@@ -12,11 +12,16 @@ function Pantalla(){
 };
 
 const styles = {
-    pantalla:{
-        border: '1px solid gray',
-        padding: '20px',
-        textAlign: 'right',
-        fontSize: '2rem',
-    }
-  };
+  pantalla: {
+    textAlign: 'right',
+    color: '#fff',
+    fontSize: '72px',
+    fontWeight: '200',
+    padding: '0 8px 16px',
+    lineHeight: 1,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+  },
+};
 export default Pantalla;
