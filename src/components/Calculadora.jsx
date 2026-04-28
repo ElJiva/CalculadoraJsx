@@ -1,46 +1,46 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useReducer } from 'react';
 import Pantalla from './Pantalla';
 import Teclado from './Teclado';
 import calculadoraContext from '../CalculadoraContext';
+import {estadoInicial, calculadoraReducer} from "../calculadoraReducer"
 
 
 
 const Calculadora = () => {
   //Estados
+  const [estado, despachador] = useReducer(estadoInicial, calculadoraReducer)
   const [valorPantalla, setValorPantalla] = useState(
     localStorage.getItem('ultimoValorPantalla') || '0'
   );
   //const [valorPrevio, setValorPrevio] = useState(0);
-  const valorPrevio = useRef(0);
+  //const valorPrevio = useRef(0);
   //const [operador, setOperador] = useState(null);
-  const operador = useRef(null);
+  //const operador = useRef(null);
   //const [esperandoOperando, setEsperandoOperando] = useState(false);
-  const esperandoOperando = useRef(false);
+  //const esperandoOperando = useRef(false);
+  const pantallaRef = useRef(null);
 
 
   //Efectos
   useEffect(() => {
-    document.title = `Calculadora: ${valorPantalla}`;
+    document.title = `Calculadora: ${estado.valorPantalla}`;
   });
   useEffect(() => {
-    localStorage.setItem('ultimoValorPantalla', valorPantalla);
-  }, [valorPantalla]);
+    localStorage.setItem('ultimoValorPantalla', estado.valorPantalla);
+  }, [estado.valorPantalla]);
 
  
   //Logica
   const presionarTecla = (tecla) => {
     if (/[0-9.]/.test(tecla)) {
-      if (esperandoOperando.current) {
-        setValorPantalla(tecla);
-        esperandoOperando.current = false;
-      } else {
-        setValorPantalla(valorPantalla === '0' ? tecla : valorPantalla + tecla);
-      }
-      return;
+      pantallaRef.current.blur()
+      despachador({tipo: 'PRESIONAR_NUMERO', numero: tecla})
+    
     }
 
     // Operadores
     if (['+', '-', '*', '/'].includes(tecla)) {
+      pantallaRef.current.blur()
       valorPrevio.current = valorPantalla;
       operador.current = tecla;
       esperandoOperando.current = true;
@@ -50,15 +50,18 @@ const Calculadora = () => {
     // Resultado
     if (tecla === '=') {
       if (operador) {
+        pantallaRef.current.blur()
         const resultado = eval(`${valorPrevio.current} ${operador.current} ${valorPantalla}`);
         setValorPantalla(String(parseInt(resultado)));
         operador.current = null;
-        esperandoOperando.current = true;
+        esperandoOperando.current = false;
+        pantallaRef.current.focus ()
       }
       return;
     }
     //Borrar
     if (tecla === 'C') {
+      pantallaRef.current.blur()
       setValorPantalla('0');
       operador.current = null;
       esperandoOperando.current = false;
@@ -68,7 +71,7 @@ const Calculadora = () => {
 
 
   return (
-    <calculadoraContext.Provider value = {{presionarTecla, valorPantalla}}>
+    <calculadoraContext.Provider value = {{presionarTecla, valorPantalla, pantallaRef}}>
     <div style={styles.calculadora}>
       <Pantalla/>
       <Teclado/>
